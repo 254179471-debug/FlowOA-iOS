@@ -1,0 +1,47 @@
+# XcodeGen 配置 —— 执行 `xcodegen generate` 生成 FlowOA.xcodeproj
+#
+# 【路线 A】有 Mac：
+#   1. brew install xcodegen
+#   2. cd FlowOA-iOS && xcodegen generate
+#   3. open FlowOA.xcodeproj
+#   4. Signing & Capabilities 里选自己的 Apple ID（免费账号即可）
+#   5. 连接 iPhone，选中设备，Cmd+R
+#
+# 【路线 B】没有 Mac（推荐）：
+#   把本目录推到 GitHub，Actions 会用云端 macOS 自动编译出未签名 .ipa
+#   （见 .github/workflows/build-ipa.yml），下载后用 Sideloadly 侧载
+
+name: FlowOA
+options:
+  bundleIdPrefix: com.gooodok
+  deploymentTarget:
+    iOS: "14.0"
+  developmentLanguage: zh-Hans
+  createIntermediateGroups: true
+
+settings:
+  base:
+    MARKETING_VERSION: "1.2.0"
+    CURRENT_PROJECT_VERSION: "1"
+    SWIFT_VERSION: "5.0"
+    IPHONEOS_DEPLOYMENT_TARGET: "14.0"
+    TARGETED_DEVICE_FAMILY: "1"      # 1 = iPhone
+
+targets:
+  FlowOA:
+    type: application
+    platform: iOS
+    sources:
+      - path: FlowOA
+        excludes:
+          - "Info.plist"             # 由 INFOPLIST_FILE 引用，不能当作资源打包
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.gooodok.flowoa
+        # 产物名固定 FlowOA（CI 脚本依赖），桌面显示名由 Info.plist 的
+        # CFBundleDisplayName=公文流转 决定，二者互不影响
+        PRODUCT_NAME: FlowOA
+        INFOPLIST_FILE: FlowOA/Info.plist
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ENABLE_BITCODE: NO
+        CODE_SIGN_STYLE: Automatic

@@ -1,0 +1,60 @@
+name: Build FlowOA iOS (unsigned IPA)
+
+# 用 GitHub 免费的 macOS 机器编译，产出未签名 .ipa
+# 下载后在 Windows 用 Sideloadly / AltStore 用自己的 Apple ID 侧载到 iPhone
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:        # 也可以在 Actions 页面手动点按钮触发
+
+jobs:
+  build:
+    name: Build unsigned IPA
+    runs-on: macos-14
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 安装 XcodeGen
+        run: brew install xcodegen
+
+      - name: 生成 Xcode 工程
+        run: xcodegen generate
+
+      - name: 编译（跳过签名）
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -project FlowOA.xcodeproj \
+            -scheme FlowOA \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath build \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            ONLY_ACTIVE_ARCH=NO \
+            build
+
+      - name: 打包成 .ipa
+        run: |
+          APP_PATH="build/Build/Products/Release-iphoneos/FlowOA.app"
+          if [ ! -d "$APP_PATH" ]; then
+            echo "::error::未找到编译产物 $APP_PATH"
+            ls -R build/Build/Products || true
+            exit 1
+          fi
+          mkdir -p out/Payload
+          cp -R "$APP_PATH" out/Payload/
+          cd out
+          zip -qry FlowOA-unsigned.ipa Payload
+          cd ..
+          ls -lh out/FlowOA-unsigned.ipa
+
+      - name: 上传 IPA 产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: FlowOA-unsigned-ipa
+          path: out/FlowOA-unsigned.ipa
+          retention-days: 30

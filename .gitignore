@@ -1,0 +1,5 @@
+build/
+*.xcworkspace/xcuserdata
+*.xcodeproj/xcuserdata
+.DS_Store
+node_modules/
