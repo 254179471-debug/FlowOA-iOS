@@ -10,7 +10,7 @@ on:
 jobs:
   build:
     name: Build unsigned IPA
-    runs-on: macos-14
+    runs-on: macos-15   # Xcode 16，能读 xcodegen 生成的格式(objectVersion 77)；macos-14 默认 Xcode 15.4 会报 "future Xcode project file format (77)"
 
     steps:
       - name: 检出代码
