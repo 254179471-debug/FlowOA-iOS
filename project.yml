@@ -45,3 +45,14 @@ targets:
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ENABLE_BITCODE: NO
         CODE_SIGN_STYLE: Automatic
+
+# 必须显式声明 scheme，否则 xcodegen 不会生成共享 scheme，
+# 导致 CI 里 `xcodebuild -scheme FlowOA` 报 “scheme not found”
+schemes:
+  FlowOA:
+    build:
+      targets:
+        FlowOA: all
+    run:
+      targets:
+        FlowOA: all
