@@ -13,7 +13,7 @@
 
 name: FlowOA
 options:
-  bundleIdPrefix: com.gooodok
+  bundleIdPrefix: com.FlowOAHarmony
   deploymentTarget:
     iOS: "14.0"
   developmentLanguage: zh-Hans
@@ -37,7 +37,7 @@ targets:
           - "Info.plist"             # 由 INFOPLIST_FILE 引用，不能当作资源打包
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.gooodok.flowoa
+        PRODUCT_BUNDLE_IDENTIFIER: com.FlowOAHarmony.app
         # 产物名固定 FlowOA（CI 脚本依赖），桌面显示名由 Info.plist 的
         # CFBundleDisplayName=公文流转 决定，二者互不影响
         PRODUCT_NAME: FlowOA
